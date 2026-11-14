@@ -1,4 +1,7 @@
 import { series, metrics } from "./physics.js";
+import { loadRegions, regionsAt, distanceM } from "./regions.js";
+
+const ALREADY_LISTED_M = 1000; // team decision: a place within 1 km of a listed site counts as already listed
 
 const STEPS_PER_DAY = 144;
 const WINDOW_DAYS = 30;
@@ -8,24 +11,32 @@ const YEARS = { 2027: [0, 365 * STEPS_PER_DAY], 2028: [365 * STEPS_PER_DAY, 731 
 
 const $ = (id) => document.getElementById(id);
 const state = { year: 2027, mode: "terrain", day: 0, time: 72, playing: null };
-let meta, sites, bodies, stepH, grid = null;
+let meta, sites, bodies, stepH, grid = null, regions = [];
 
 async function load() {
-  const [m, s, b] = await Promise.all([
+  const [m, s, b, g] = await Promise.all([
     fetch("data/meta.json", { cache: "no-cache" }).then((r) => r.json()),
     fetch("data/sites.json", { cache: "no-cache" }).then((r) => r.json()),
     fetch("data/bodies.bin", { cache: "no-cache" }).then((r) => r.arrayBuffer()),
+    fetch("data/nasa_artemis_regions_2022.geojson", { cache: "no-cache" }).then((r) => r.json()),
   ]);
-  meta = m; sites = s; bodies = new Float32Array(b);
+  meta = m; sites = s; bodies = new Float32Array(b); regions = loadRegions(g);
+  for (const site of sites) if (site.id.startsWith("top")) site.inRegions = regionsAt(regions, site.lat, site.lon);
   stepH = meta.step_s / 3600;
   const select = $("site");
   const groups = [["Suggested by Triad", (s) => s.id.startsWith("top")], ["NASA Artemis III regions and known sites", (s) => s.id.startsWith("region")]];
   for (const [label, test] of groups) {
     const g = document.createElement("optgroup"); g.label = label;
-    for (const site of sites.filter(test)) g.appendChild(new Option(`${site.name} (${fmtLat(site.lat)}, ${fmtLon(site.lon)})`, site.id));
+    for (const site of sites.filter(test)) {
+      const tag = site.inRegions && site.inRegions.length ? ` · inside NASA region ${site.inRegions.join(" / ")}` : "";
+      g.appendChild(new Option(`${site.name} (${fmtLat(site.lat)}, ${fmtLon(site.lon)})${tag}`, site.id));
+    }
     select.appendChild(g);
   }
-  select.addEventListener("change", () => choose(sites.find((x) => x.id === select.value)));
+  select.addEventListener("change", () => {
+    const site = sites.find((x) => x.id === select.value);
+    if (site) choose(site);
+  });
   wire();
   choose(sites[0]);
 }
@@ -38,7 +49,10 @@ const pct = (x) => `${(100 * x).toFixed(1)}%`;
 function choose(site) {
   state.site = site;
   state.series = series(bodies, meta.count, site.horizon, site.lat, site.lon, site.ground_m, meta.observer_height_m);
-  $("site-source").textContent = `Source: ${site.source}.` + (site.note ? ` ${site.note}` : "");
+  $("site-source").textContent = `Source: ${site.source}.` + (site.note ? ` ${site.note}` : "") +
+    (site.inRegions && site.inRegions.length ? ` Inside NASA's Artemis III candidate region ${site.inRegions.join(" / ")}.` : "");
+  if (!site.id.startsWith("grid")) $("own-match").hidden = true;
+  syncSelect(site);
   $("alt-out").innerHTML = "";
   refreshYear();
 }
@@ -295,6 +309,38 @@ async function useOwnCoordinates() {
   const site = gridSite(best, "Your coordinates", `Nearest computed point, ${(bestD / 1000).toFixed(2)} km from ${fmtLat(lat)}, ${fmtLon(lon)}`);
   $("own-note").textContent = `Using the nearest computed point, ${(bestD / 1000).toFixed(2)} km away.`;
   choose(site);
+  showMatches(lat, lon);
+}
+
+// Keeps the site list showing what is on screen, including the user's own coordinates.
+function syncSelect(site) {
+  const select = $("site");
+  let own = select.querySelector('option[value="own"]');
+  if (site.id.startsWith("grid")) {
+    if (!own) { own = new Option("", "own"); select.insertBefore(own, select.firstChild); }
+    own.text = `Your coordinates (nearest computed point ${fmtLat(site.lat)}, ${fmtLon(site.lon)})`;
+    select.value = "own";
+  } else {
+    if (own) own.remove();
+    select.value = site.id;
+  }
+}
+
+// Tells the user when their coordinates fall inside a NASA region or next to a listed site.
+function showMatches(lat, lon) {
+  const box = $("own-match");
+  const notes = [];
+  const inRegions = regionsAt(regions, lat, lon);
+  if (inRegions.length) notes.push(`This place is inside NASA's Artemis III candidate region ${inRegions.join(" / ")}.`);
+  const near = sites.map((s) => ({ s, d: distanceM(lat, lon, s.lat, s.lon) })).filter((x) => x.d <= ALREADY_LISTED_M).sort((a, b) => a.d - b.d);
+  box.innerHTML = notes.map((n) => `<p>${n}</p>`).join("") +
+    near.map(({ s, d }) => `<p>Already in the list: <b>${s.name}</b>, ${Math.round(d)} m away. <button type="button" data-open="${s.id}">Open it</button></p>`).join("");
+  box.hidden = !box.innerHTML;
+  box.querySelectorAll("[data-open]").forEach((b) => b.addEventListener("click", () => {
+    $("site").value = b.dataset.open;
+    choose(sites.find((x) => x.id === b.dataset.open));
+    box.hidden = true;
+  }));
 }
 
 function gridSite(i, name, source) {

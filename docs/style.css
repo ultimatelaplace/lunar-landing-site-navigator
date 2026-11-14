@@ -31,6 +31,8 @@ button:hover { border-color: var(--accent); }
 .modes button:last-child { border-radius: 0 6px 6px 0; }
 .modes button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
 .check { display: block; margin: 8px 0; }
+.match { border: 1px solid #2f80ed; background: #eef5ff; border-radius: 8px; padding: 4px 12px; margin: 8px 0; }
+.match p { margin: 6px 0; }
 .source { margin: 4px 0; font-size: 14px; color: var(--muted); }
 .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; margin: 12px 0; }
 .stats div { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
