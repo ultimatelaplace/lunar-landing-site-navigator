@@ -36,10 +36,11 @@ def pixel_to_xy(row, col):
 
 class ElevationMap:
     def __init__(self, path):
-        raw = np.fromfile(Path(path), dtype="<i2")
-        if raw.size != SIZE * SIZE:
-            raise ValueError(f"{path}: expected {SIZE * SIZE} samples, found {raw.size}")
-        self.dn = raw.reshape(SIZE, SIZE)
+        path = Path(path)
+        if path.stat().st_size != SIZE * SIZE * 2:
+            raise ValueError(f"{path}: expected {SIZE * SIZE} 16-bit samples")
+        # memory-mapped so that parallel workers share one copy through the page cache
+        self.dn = np.memmap(path, dtype="<i2", mode="r", shape=(SIZE, SIZE))
 
     def height(self, lat_deg, lon_deg):
         """Height above the 1737.4 km sphere in meters; NaN outside the map."""

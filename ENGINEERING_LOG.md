@@ -52,3 +52,4 @@ All times are Netherlands time (CET). Every idea, decision and finished task is 
   - Communication with Earth counts only when Earth's whole disk is above the horizon.
 - 12:16: The Moon's atmosphere is ignored for refraction. Its surface pressure is about 3 × 10⁻¹⁵ bar (NASA Moon Fact Sheet), so its effect on the horizon is far too small to measure.
 - 12:22: Code step 2, written with SI: the visible share of the Sun's disk and whether Earth's whole disk is above the horizon, following the team's decisions.
+- 13:01: Code step 3, written with SI: the grid run. A trial on 15 points gave the same results twice; the floor of Shackleton crater came out dark all year, as expected for a permanently shadowed region.
