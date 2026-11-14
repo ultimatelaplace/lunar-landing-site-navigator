@@ -39,7 +39,7 @@ button:hover { border-color: var(--accent); }
 .grid small { display: block; color: var(--muted); font-size: 12px; }
 .grid b { font-size: 17px; }
 .grid .status { grid-column: span 2; }
-canvas { width: 100%; height: auto; border: 1px solid var(--line); border-radius: 6px; background: #0f1724; }
+canvas { width: 100%; height: auto; border: 1px solid var(--line); border-radius: 6px; background: #fff; }
 table { border-collapse: collapse; width: 100%; font-size: 14px; margin-top: 8px; }
 th, td { text-align: left; padding: 4px 6px; border-bottom: 1px solid var(--line); }
 footer { color: var(--muted); }

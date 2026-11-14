@@ -60,8 +60,8 @@
 
   <section class="card" id="card-year">
     <h2>3 · Sunlight over the year</h2>
-    <p class="small">Each column is a day, each row a time of day (UTC). Yellow means sunlight; the shade shows how much of the Sun's disk is above the horizon.</p>
-    <canvas id="year" width="1460" height="288"></canvas>
+    <p class="small">Read it like a calendar: each thin column is one day, and going down the column is one day from 00:00 to 24:00 (UTC). Yellow means the Sun is up for a lander at this site. The blue strip below shows when Earth is fully in view for direct communication. The red dot is the moment shown in cards 2 and 4.</p>
+    <canvas id="year"></canvas>
     <div class="row">
       <label for="day">Day</label><input id="day" type="range" min="0" max="364" value="0">
       <output id="day-out"></output>
@@ -72,12 +72,12 @@
       <button type="button" id="play">▶ Play</button>
     </div>
     <h3>Suggested landing window <span id="window-out" class="small"></span></h3>
-    <canvas id="month" width="1460" height="288"></canvas>
+    <canvas id="month"></canvas>
   </section>
 
   <section class="card" id="card-horizon">
     <h2>4 · Horizon, Sun and Earth</h2>
-    <p class="small">The terrain horizon all around the site (north at 0°, east at 90°). The yellow dots are the Sun's path on the chosen day and the blue dots are Earth's. The Sun (yellow) and Earth (blue) are drawn at the chosen time at their true size; heights are stretched so that the terrain can be seen, which is why the disks look tall.</p>
+    <p class="small">Looking all around the site, from north (N) through east (E), south (S) and west (W). Brown is the terrain; the dotted lines show where the Sun and Earth move during the chosen day, and the circles show where they are at the chosen time. Heights are stretched so that the terrain can be seen, and the circles are enlarged.</p>
     <canvas id="horizon" width="1460" height="420"></canvas>
   </section>
 

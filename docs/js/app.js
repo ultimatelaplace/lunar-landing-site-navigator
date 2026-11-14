@@ -92,57 +92,93 @@ function cellColor(t) {
   return color(s.sun[t], 0);
 }
 
-function paintDays(canvas, firstStep, days) {
-  const w = days * 4, h = 288;
-  canvas.width = w; canvas.height = h;
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const PAD = { left: 64, top: 26, right: 12 };
+const STRIP = 18;
+
+// Draws days x time-of-day cells into the plot area and returns the plot geometry.
+function heatmap(canvas, firstStep, days, dayWidth, title) {
+  const plotW = days * dayWidth, plotH = 288;
+  canvas.width = PAD.left + plotW + PAD.right;
+  canvas.height = PAD.top + plotH + 10 + STRIP + 44;
   const ctx = canvas.getContext("2d");
-  const img = ctx.createImageData(w, h);
+  ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+  const img = ctx.createImageData(plotW, plotH);
   for (let d = 0; d < days; d++) {
     for (let k = 0; k < STEPS_PER_DAY; k++) {
       const [r, g, b] = cellColor(firstStep + d * STEPS_PER_DAY + k);
-      for (let dx = 0; dx < 4; dx++) for (let dy = 0; dy < 2; dy++) {
-        const p = ((k * 2 + dy) * w + d * 4 + dx) * 4;
+      for (let dx = 0; dx < dayWidth; dx++) for (let dy = 0; dy < 2; dy++) {
+        const p = ((k * 2 + dy) * plotW + d * dayWidth + dx) * 4;
         img.data[p] = r; img.data[p + 1] = g; img.data[p + 2] = b; img.data[p + 3] = 255;
       }
     }
   }
-  ctx.putImageData(img, 0, 0);
-  return ctx;
+  ctx.putImageData(img, PAD.left, PAD.top);
+  ctx.fillStyle = "#16202c"; ctx.font = "13px system-ui"; ctx.textBaseline = "middle"; ctx.textAlign = "right";
+  for (const hh of [0, 6, 12, 18, 24]) ctx.fillText(`${String(hh).padStart(2, "0")}:00`, PAD.left - 6, PAD.top + hh * 12);
+  ctx.save(); ctx.translate(14, PAD.top + plotH / 2); ctx.rotate(-Math.PI / 2); ctx.textAlign = "center";
+  ctx.fillText("time of day (UTC)", 0, 0); ctx.restore();
+  // Earth strip: blue where Earth's whole disk is in view at any time of that day slot
+  const y0 = PAD.top + plotH + 10, s = state.series, steps = days * STEPS_PER_DAY;
+  for (let x = 0; x < plotW; x++) {
+    const a = firstStep + Math.floor((x / plotW) * steps), b = firstStep + Math.floor(((x + 1) / plotW) * steps);
+    let seen = 0; for (let t = a; t < Math.max(b, a + 1); t++) seen += s.earth[t];
+    ctx.fillStyle = seen ? "#2f80ed" : "#d8dee6"; ctx.fillRect(PAD.left + x, y0, 1, STRIP);
+  }
+  ctx.fillStyle = "#16202c"; ctx.textAlign = "right"; ctx.fillText("Earth", PAD.left - 6, y0 + STRIP / 2);
+  legend(ctx, PAD.left, y0 + STRIP + 26);
+  return { ctx, plotW, plotH, x0: PAD.left, y0: PAD.top };
+}
+
+function legend(ctx, x, y) {
+  const items = [["#0f1724", "Sun hidden"], ["#82693f", "Sun partly visible"], ["#f2c94c", "Sun fully visible"], ["#2f80ed", "Earth fully in view"]];
+  if (state.mode === "blocked") items.splice(3, 0, ["#c8463c", "Sun hidden by terrain only"]);
+  ctx.font = "13px system-ui"; ctx.textAlign = "left"; ctx.textBaseline = "middle";
+  for (const [c, label] of items) {
+    ctx.fillStyle = c; ctx.fillRect(x, y - 7, 14, 14); ctx.strokeStyle = "#999"; ctx.strokeRect(x, y - 7, 14, 14);
+    ctx.fillStyle = "#16202c"; ctx.fillText(label, x + 20, y); x += 40 + ctx.measureText(label).width;
+  }
 }
 
 function drawYear() {
   const [from, to] = yearRange();
-  const ctx = paintDays($("year"), from, (to - from) / STEPS_PER_DAY);
-  const w = state.window;
-  ctx.strokeStyle = "#2f80ed"; ctx.lineWidth = 2;
-  ctx.strokeRect(((w.start - from) / STEPS_PER_DAY) * 4, 1, WINDOW_DAYS * 4, 286);
-  ctx.strokeStyle = "#fff"; ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(state.day * 4 + 2, 0); ctx.lineTo(state.day * 4 + 2, 288); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(0, state.time * 2 + 1); ctx.lineTo(ctx.canvas.width, state.time * 2 + 1); ctx.stroke();
+  const days = (to - from) / STEPS_PER_DAY;
+  const { ctx, plotH, x0, y0 } = heatmap($("year"), from, days, 4);
+  ctx.textAlign = "center"; ctx.textBaseline = "alphabetic"; ctx.fillStyle = "#16202c"; ctx.font = "13px system-ui";
+  for (let m = 0; m < 12; m++) {
+    const d = Math.round((Date.UTC(state.year, m, 1) - Date.UTC(state.year, 0, 1)) / 86400000);
+    ctx.fillText(MONTHS[m], x0 + d * 4 + 60, y0 - 8);
+    ctx.fillStyle = "#16202c"; ctx.fillRect(x0 + d * 4, y0 - 4, 1, 4);
+  }
+  const w = state.window, wx = x0 + ((w.start - from) / STEPS_PER_DAY) * 4;
+  ctx.strokeStyle = "#2f80ed"; ctx.lineWidth = 3; ctx.strokeRect(wx, y0 + 1, WINDOW_DAYS * 4, plotH - 2);
+  ctx.fillStyle = "#2f80ed"; ctx.textAlign = "left"; ctx.font = "bold 13px system-ui";
+  ctx.fillText("suggested window", Math.min(wx + 4, x0 + days * 4 - 130), y0 + plotH - 8);
+  marker(ctx, x0 + state.day * 4 + 2, y0 + state.time * 2 + 1, plotH, y0);
+}
+
+function marker(ctx, x, y, plotH, y0) {
+  ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(x, y0); ctx.lineTo(x, y0 + plotH); ctx.stroke();
+  ctx.fillStyle = "#e0393e"; ctx.beginPath(); ctx.arc(x, y, 6, 0, 2 * Math.PI); ctx.fill();
+  ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 2; ctx.stroke();
 }
 
 function drawMonth() {
   const w = state.window;
-  const canvas = $("month");
-  const ctx = paintDays(canvas, w.start, WINDOW_DAYS);
-  // scale the 120 px wide month to the canvas: redraw wider by stretching
-  const copy = document.createElement("canvas");
-  copy.width = canvas.width; copy.height = canvas.height;
-  copy.getContext("2d").drawImage(canvas, 0, 0);
-  canvas.width = 1440; canvas.height = 312;
-  const c = canvas.getContext("2d");
-  c.imageSmoothingEnabled = false;
-  c.drawImage(copy, 0, 0, 1440, 288);
-  // Earth strip: blue where Earth's whole disk is in view
-  const s = state.series, len = WINDOW_DAYS * STEPS_PER_DAY;
-  for (let x = 0; x < 1440; x++) {
-    const t = w.start + Math.floor((x / 1440) * len);
-    c.fillStyle = s.earth[t] ? "#2f80ed" : "#1d2735";
-    c.fillRect(x, 292, 1, 20);
+  const { ctx, plotH, x0, y0 } = heatmap($("month"), w.start, WINDOW_DAYS, 48);
+  ctx.textAlign = "center"; ctx.textBaseline = "alphabetic"; ctx.fillStyle = "#16202c"; ctx.font = "12px system-ui";
+  for (let d = 0; d < WINDOW_DAYS; d += 2) {
+    const date = utcOf(w.start + d * STEPS_PER_DAY);
+    ctx.fillText(`${MONTHS[date.getUTCMonth()]} ${date.getUTCDate()}`, x0 + d * 48 + 24, y0 - 8);
   }
-  c.fillStyle = "#fff"; c.font = "13px system-ui";
-  for (let d = 0; d < WINDOW_DAYS; d += 5) c.fillText(utcOf(w.start + d * STEPS_PER_DAY).toISOString().slice(5, 10), d * 48 + 3, 14);
-  const m = metrics(s, w.start, w.end, stepH);
+  ctx.strokeStyle = "rgba(255,255,255,0.25)";
+  for (let d = 1; d < WINDOW_DAYS; d++) { ctx.beginPath(); ctx.moveTo(x0 + d * 48, y0); ctx.lineTo(x0 + d * 48, y0 + plotH); ctx.stroke(); }
+  if (state.t >= w.start && state.t < w.end) {
+    const k = state.t - w.start;
+    marker(ctx, x0 + Math.floor(k / STEPS_PER_DAY) * 48 + 24, y0 + (k % STEPS_PER_DAY) * 2 + 1, plotH, y0);
+  }
+  const m = metrics(state.series, w.start, w.end, stepH);
   $("window-out").textContent = `${utcOf(w.start).toISOString().slice(0, 10)} to ${utcOf(w.end).toISOString().slice(0, 10)} · sunlight ${pct(m.sunShare)} · longest darkness ${fmtH(m.longestDarkH)} · Earth in view ${pct(m.earthShare)}` + (w.ok ? "" : " · no 30-day window here keeps Earth in view 30% of the time");
 }
 
@@ -169,37 +205,67 @@ function refreshMoment() {
   $("facts").innerHTML = facts.map(([k, v]) => `<div><small>${k}</small><b>${v}</b></div>`).join("") +
     `<div class="status"><small>Status</small><b>${sunText} · ${s.earth[t] ? "Earth in view" : "Earth hidden"}</b></div>`;
   drawYear();
+  drawMonth();
   drawHorizon();
 }
 
 function drawHorizon() {
   const canvas = $("horizon"), ctx = canvas.getContext("2d");
-  const W = canvas.width, H = canvas.height, s = state.series, site = state.site;
+  const W = canvas.width, H = canvas.height, s = state.series, site = state.site, t = state.t;
   const [from] = yearRange();
   const dayStart = from + state.day * STEPS_PER_DAY;
-  const top = Math.max(12, Math.ceil(Math.max(...site.horizon, s.earthEl[state.t] + 2, s.sunEl[state.t] + 2)) + 2);
-  const bottom = -6;
-  const X = (az) => (az / 360) * W, Y = (el) => H - ((el - bottom) / (top - bottom)) * H;
-  ctx.fillStyle = "#0f1724"; ctx.fillRect(0, 0, W, H);
-  ctx.strokeStyle = "#2a3646"; ctx.fillStyle = "#8a96a6"; ctx.font = "13px system-ui";
-  for (let az = 0; az <= 360; az += 45) { ctx.beginPath(); ctx.moveTo(X(az), 0); ctx.lineTo(X(az), H); ctx.stroke(); ctx.fillText(`${az}°`, X(az) + 3, H - 6); }
-  for (let el = Math.ceil(bottom / 5) * 5; el <= top; el += 5) { ctx.beginPath(); ctx.moveTo(0, Y(el)); ctx.lineTo(W, Y(el)); ctx.stroke(); ctx.fillText(`${el}°`, 3, Y(el) - 3); }
   const profile = state.mode === "flat" ? site.horizon.map(() => 0) : site.horizon;
-  ctx.fillStyle = "#5b4636"; ctx.beginPath(); ctx.moveTo(0, H);
+  const L = 52, R = W - 34, T = 34, B = H - 34;
+  const lo = Math.floor(Math.min(...profile, s.sunEl[t], s.earthEl[t]) - 2);
+  const hi = Math.ceil(Math.max(...profile, s.sunEl[t], s.earthEl[t]) + 3);
+  const X = (az) => L + (az / 360) * (R - L), Y = (el) => B - ((el - lo) / (hi - lo)) * (B - T);
+  ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, W, H);
+  const sky = ctx.createLinearGradient(0, T, 0, B); sky.addColorStop(0, "#0b1220"); sky.addColorStop(1, "#1d2b44");
+  ctx.fillStyle = sky; ctx.fillRect(L, T, R - L, B - T);
+  ctx.font = "13px system-ui"; ctx.fillStyle = "#16202c"; ctx.textAlign = "center"; ctx.textBaseline = "alphabetic";
+  const names = { 0: "N", 90: "E", 180: "S", 270: "W", 360: "N" };
+  for (let az = 0; az <= 360; az += 45) {
+    ctx.strokeStyle = "rgba(255,255,255,0.12)"; ctx.beginPath(); ctx.moveTo(X(az), T); ctx.lineTo(X(az), B); ctx.stroke();
+    ctx.fillStyle = "#16202c"; ctx.fillText(names[az] ? `${names[az]} ${az}°` : `${az}°`, X(az), H - 12);
+  }
+  ctx.textAlign = "right"; ctx.textBaseline = "middle";
+  const stepEl = hi - lo > 20 ? 5 : hi - lo > 8 ? 2 : 1;
+  for (let el = Math.ceil(lo / stepEl) * stepEl; el <= hi; el += stepEl) {
+    ctx.strokeStyle = el === 0 ? "rgba(255,255,255,0.45)" : "rgba(255,255,255,0.12)";
+    ctx.beginPath(); ctx.moveTo(L, Y(el)); ctx.lineTo(R, Y(el)); ctx.stroke();
+    ctx.fillText(`${el}°`, L - 6, Y(el));
+  }
+  ctx.save(); ctx.translate(14, (T + B) / 2); ctx.rotate(-Math.PI / 2); ctx.textAlign = "center"; ctx.fillText("height above level (°)", 0, 0); ctx.restore();
+  ctx.fillStyle = "#6b5a49"; ctx.strokeStyle = "#c9b79c"; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(L, B);
   for (let az = 0; az <= 360; az++) ctx.lineTo(X(az), Y(profile[az % 360]));
-  ctx.lineTo(W, H); ctx.closePath(); ctx.fill();
-  const path = (azs, els, colorCss) => {
-    ctx.fillStyle = colorCss;
-    for (let k = 0; k < STEPS_PER_DAY; k++) ctx.fillRect(X(azs[dayStart + k]) - 1, Y(els[dayStart + k]) - 1, 2, 2);
+  ctx.lineTo(R, B); ctx.closePath(); ctx.fill();
+  ctx.beginPath(); for (let az = 0; az <= 360; az++) ctx[az ? "lineTo" : "moveTo"](X(az), Y(profile[az % 360])); ctx.stroke();
+  const path = (azs, els, css) => {
+    ctx.fillStyle = css;
+    for (let k = 0; k < STEPS_PER_DAY; k += 2) ctx.fillRect(X(azs[dayStart + k]) - 1.5, Y(els[dayStart + k]) - 1.5, 3, 3);
   };
-  path(s.sunAz, s.sunEl, "rgba(242,201,76,0.8)");
-  path(s.earthAz, s.earthEl, "rgba(47,128,237,0.7)");
-  const disk = (az, el, radiusDeg, fill) => {
-    const rx = (radiusDeg / 360) * W, ry = (radiusDeg / (top - bottom)) * H;
-    ctx.fillStyle = fill; ctx.beginPath(); ctx.ellipse(X(az), Y(el), Math.max(rx, 3), Math.max(ry, 3), 0, 0, 2 * Math.PI); ctx.fill();
+  path(s.sunAz, s.sunEl, "rgba(242,201,76,0.9)");
+  path(s.earthAz, s.earthEl, "rgba(120,170,255,0.9)");
+  const body = (az, el, color, label) => {
+    const x = X(az), y = Y(el);
+    ctx.fillStyle = color; ctx.beginPath(); ctx.arc(x, y, 9, 0, 2 * Math.PI); ctx.fill();
+    ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 2; ctx.stroke();
+    ctx.font = "bold 14px system-ui"; ctx.textAlign = x > R - 220 ? "right" : "left"; ctx.textBaseline = "middle";
+    const tx = x > R - 220 ? x - 14 : x + 14, ty = Math.max(T + 12, Math.min(B - 12, y - 16));
+    ctx.lineWidth = 4; ctx.strokeStyle = "rgba(0,0,0,0.75)"; ctx.strokeText(label, tx, ty);
+    ctx.fillStyle = "#ffffff"; ctx.fillText(label, tx, ty);
   };
-  disk(s.sunAz[state.t], s.sunEl[state.t], 0.267, "#f2c94c");
-  disk(s.earthAz[state.t], s.earthEl[state.t], 0.95, "#2f80ed");
+  const sunLabel = s.sun[t] >= 0.999 ? "Sun: fully up" : s.sun[t] > 0 ? `Sun: ${Math.round(100 * s.sun[t])}% visible` : "Sun: hidden";
+  body(s.sunAz[t], s.sunEl[t], "#f2c94c", `${sunLabel} (${s.sunEl[t].toFixed(1)}°)`);
+  body(s.earthAz[t], s.earthEl[t], "#2f80ed", `Earth: ${s.earth[t] ? "in view" : "hidden"} (${s.earthEl[t].toFixed(1)}°)`);
+  ctx.font = "13px system-ui"; ctx.textAlign = "left"; ctx.textBaseline = "middle";
+  const key = [["#c9b79c", "terrain horizon"], ["#f2c94c", "Sun's path today"], ["#78aaff", "Earth's path today"]];
+  let kx = L + 8;
+  for (const [c, label] of key) {
+    ctx.fillStyle = c; ctx.fillRect(kx, T - 22, 14, 6); ctx.fillStyle = "#16202c"; ctx.fillText(label, kx + 20, T - 19);
+    kx += 40 + ctx.measureText(label).width;
+  }
 }
 
 async function useOwnCoordinates() {
