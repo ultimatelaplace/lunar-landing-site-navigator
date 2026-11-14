@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Triad · Lunar Landing Site Navigator</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Triad</h1>
+  <p class="lead">Compare landing sites and dates at the Moon's south pole: where the Sun keeps a lander powered and where Earth stays in view for direct communication.</p>
+  <p class="small">Team Ultimate Laplace · NASA Space Apps Challenge 2026 · Data: NASA LRO LOLA terrain, NAIF SPICE ephemerides, checked against JPL Horizons.</p>
+</header>
+
+<main>
+  <section class="card" id="card-site">
+    <h2>1 · Site</h2>
+    <div class="row">
+      <label for="site">Site</label>
+      <select id="site"></select>
+      <div class="modes" role="group" aria-label="Horizon">
+        <button type="button" data-mode="terrain" class="on">With terrain</button>
+        <button type="button" data-mode="flat">Flat horizon</button>
+        <button type="button" data-mode="blocked">Blocked by terrain</button>
+      </div>
+      <div class="modes" role="group" aria-label="Year">
+        <button type="button" data-year="2027" class="on">2027</button>
+        <button type="button" data-year="2028">2028</button>
+      </div>
+    </div>
+    <p class="source" id="site-source"></p>
+    <label class="check"><input type="checkbox" id="own"> I want to enter my own coordinates</label>
+    <div id="own-box" hidden>
+      <div class="row">
+        <label>Latitude (°, south is negative) <input id="own-lat" type="number" step="0.001" min="-90" max="-84" value="-89.5"></label>
+        <label>Longitude (° east, 0–360) <input id="own-lon" type="number" step="0.01" min="0" max="360" value="0"></label>
+        <button type="button" id="own-go">Show this place</button>
+      </div>
+      <p class="small" id="own-note">Covers 84°S to the pole. The tool uses the nearest computed point (2 km grid) and says how far away it is.</p>
+    </div>
+    <div class="stats">
+      <div><span id="m-lost">–</span><small id="m-lost-label">sunlight lost to terrain per year</small></div>
+      <div><span id="m-sunh">–</span><small>full-sun hours per year</small></div>
+      <div><span id="m-dark">–</span><small>longest darkness</small></div>
+      <div><span id="m-earth">–</span><small>time with Earth fully in view</small></div>
+      <div><span id="m-gap">–</span><small>longest time without Earth</small></div>
+    </div>
+    <div class="row">
+      <button type="button" id="alt-go">This site can't be used: find alternatives</button>
+      <button type="button" id="print">Print / save as PDF</button>
+    </div>
+    <div id="alt-out"></div>
+  </section>
+
+  <section class="card" id="card-time">
+    <h2>2 · Location and time</h2>
+    <div class="grid" id="facts"></div>
+  </section>
+
+  <section class="card" id="card-year">
+    <h2>3 · Sunlight over the year</h2>
+    <p class="small">Each column is a day, each row a time of day (UTC). Yellow means sunlight; the shade shows how much of the Sun's disk is above the horizon.</p>
+    <canvas id="year" width="1460" height="288"></canvas>
+    <div class="row">
+      <label for="day">Day</label><input id="day" type="range" min="0" max="364" value="0">
+      <output id="day-out"></output>
+    </div>
+    <div class="row">
+      <label for="time">Time</label><input id="time" type="range" min="0" max="143" value="72">
+      <output id="time-out"></output>
+      <button type="button" id="play">▶ Play</button>
+    </div>
+    <h3>Suggested landing window <span id="window-out" class="small"></span></h3>
+    <canvas id="month" width="1460" height="288"></canvas>
+  </section>
+
+  <section class="card" id="card-horizon">
+    <h2>4 · Horizon, Sun and Earth</h2>
+    <p class="small">The terrain horizon all around the site (north at 0°, east at 90°). The yellow dots are the Sun's path on the chosen day and the blue dots are Earth's. The Sun (yellow) and Earth (blue) are drawn at the chosen time at their true size; heights are stretched so that the terrain can be seen, which is why the disks look tall.</p>
+    <canvas id="horizon" width="1460" height="420"></canvas>
+  </section>
+
+  <section class="card" id="card-accuracy">
+    <h2>Accuracy</h2>
+    <ul class="small" id="accuracy">
+      <li>Sun and Earth directions match JPL Horizons within 0.00003° (40 checks at 4 sites on 5 dates).</li>
+      <li>The terrain map is read without a pixel shift (checked against Shackleton crater and against a second LOLA map).</li>
+      <li>The Moon's atmosphere is ignored for refraction: its surface pressure is about 3 × 10⁻¹⁵ bar (NASA Moon Fact Sheet).</li>
+      <li>Results use 10-minute steps; times of sunrise, sunset and Earth rise can be off by up to 10 minutes.</li>
+    </ul>
+  </section>
+</main>
+
+<footer class="small">Ultimate Laplace · K. Ü. (team captain), A. K. G. · Source code under the Apache 2.0 license. SI-assisted project; see the engineering log.</footer>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

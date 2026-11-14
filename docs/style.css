@@ -1,0 +1,51 @@
+:root {
+  --ink: #16202c;
+  --muted: #5a6878;
+  --line: #d8dee6;
+  --bg: #f4f6f9;
+  --card: #ffffff;
+  --accent: #d9822b;
+  --sun: #f2c94c;
+  --earth: #2f80ed;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font: 16px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); background: var(--bg); }
+header, main, footer { max-width: 1100px; margin: 0 auto; padding: 16px; }
+h1 { margin: 8px 0 4px; font-size: 32px; }
+h2 { margin: 0 0 12px; font-size: 19px; }
+h3 { margin: 16px 0 8px; font-size: 16px; }
+.lead { margin: 0 0 4px; font-size: 18px; }
+.small { font-size: 13px; color: var(--muted); }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 8px 0; }
+.row input[type=range] { flex: 1; min-width: 200px; }
+select, input, button { font: inherit; }
+select { padding: 6px 8px; min-width: 260px; }
+input[type=number] { width: 120px; padding: 4px 6px; margin-left: 6px; }
+button { padding: 6px 12px; border: 1px solid var(--line); border-radius: 6px; background: #fff; cursor: pointer; }
+button:hover { border-color: var(--accent); }
+.modes { display: inline-flex; }
+.modes button { border-radius: 0; margin-left: -1px; }
+.modes button:first-child { border-radius: 6px 0 0 6px; margin-left: 0; }
+.modes button:last-child { border-radius: 0 6px 6px 0; }
+.modes button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+.check { display: block; margin: 8px 0; }
+.source { margin: 4px 0; font-size: 14px; color: var(--muted); }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; margin: 12px 0; }
+.stats div { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
+.stats span { display: block; font-size: 22px; font-weight: 600; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; }
+.grid div { border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; }
+.grid small { display: block; color: var(--muted); font-size: 12px; }
+.grid b { font-size: 17px; }
+.grid .status { grid-column: span 2; }
+canvas { width: 100%; height: auto; border: 1px solid var(--line); border-radius: 6px; background: #0f1724; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; margin-top: 8px; }
+th, td { text-align: left; padding: 4px 6px; border-bottom: 1px solid var(--line); }
+footer { color: var(--muted); }
+@media print {
+  body { background: #fff; }
+  .row button, #own, .check, #alt-go, #play, input[type=range], .modes { display: none !important; }
+  .card { break-inside: avoid; border-color: #999; }
+  canvas { border-color: #999; }
+}
