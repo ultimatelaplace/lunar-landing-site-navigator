@@ -53,3 +53,10 @@ All times are Netherlands time (CET). Every idea, decision and finished task is 
 - 12:16: The Moon's atmosphere is ignored for refraction. Its surface pressure is about 3 × 10⁻¹⁵ bar (NASA Moon Fact Sheet), so its effect on the horizon is far too small to measure.
 - 12:22: Code step 2, written with SI: the visible share of the Sun's disk and whether Earth's whole disk is above the horizon, following the team's decisions.
 - 13:01: Code step 3, written with SI: the grid run. A trial on 15 points gave the same results twice; the floor of Shackleton crater came out dark all year, as expected for a permanently shadowed region.
+- 13:21: Team decisions on sites and dates:
+  - The site list has the system's top 10 sites, plus NASA's Artemis III candidate regions and well-known south pole sites.
+  - NASA's 2024 announcement names the regions but gives no coordinates. K. Ü. reads the region centers in NASA Moon Trek and A. K. G. checks them in Quickmap. For regions that are not in the Moon Trek layer, the tool uses its best point within 15 km of the IAU feature center.
+  - Every site shows where its coordinates come from.
+  - When the tool looks for alternatives, it keeps the same start and end dates.
+- 13:23: Grid run finished: 26,045 points, 2027–2028, every 10 minutes (22 minutes on 10 cores). The best grid point gets 66% of full sunlight; a 150 m search around the top points raised this to 77%, so the best places are narrow ridges.
+- 13:32: Team decision on ranking: a site must see Earth's whole disk at least 30% of the time. Among those, the site with the shortest longest period of darkness comes first, then the one with the most sunlight.
