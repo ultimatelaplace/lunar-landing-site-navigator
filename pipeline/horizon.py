@@ -3,6 +3,7 @@ import numpy as np
 
 from .dem import MOON_RADIUS_M
 
+OBSERVER_HEIGHT_M = 2.0  # team decision: height of the lander's solar panel and antenna
 AZIMUTHS_DEG = np.arange(360.0)
 DISTANCES_M = np.unique(np.concatenate([
     np.arange(20.0, 2000.0, 20.0),
@@ -29,7 +30,7 @@ def elevation_angle_deg(observer_radius_m, target_radius_m, distance_m):
                                  target_radius_m * np.sin(theta)))
 
 
-def horizon_profile(height_at, lat_deg, lon_deg, observer_height_m=0.0,
+def horizon_profile(height_at, lat_deg, lon_deg, observer_height_m=OBSERVER_HEIGHT_M,
                     azimuths_deg=AZIMUTHS_DEG, distances_m=DISTANCES_M):
     """Highest terrain elevation angle in each azimuth.
 

@@ -46,3 +46,8 @@ All times are Netherlands time (CET). Every idea, decision and finished task is 
   - Times shown: UTC, the user's local time and lunar local solar time.
   - Data: LOLA south pole elevation map (20 m per pixel) for the terrain; NAIF SPICE files for the Sun, Earth and the Moon's orientation; JPL Horizons as an independent check; Quickmap and Moon Trek for coordinate checks and pictures.
 - 12:05: Code step 1, written with SI: terrain horizon from the LOLA map and Sun and Earth directions from NAIF SPICE. Checked against JPL Horizons at 4 south pole sites on 5 dates in 2027–2028 (40 comparisons): the largest difference is 0.00000001° for the Sun and 0.00003° for Earth.
+- 12:16: Team decisions:
+  - The horizon is computed from 2 m above the ground (the height of a lander's solar panel and antenna).
+  - Sunlight is measured as the visible fraction of the Sun's disk, because a solar panel's power depends on it.
+  - Communication with Earth counts only when Earth's whole disk is above the horizon.
+- 12:16: The Moon's atmosphere is ignored for refraction. Its surface pressure is about 3 × 10⁻¹⁵ bar (NASA Moon Fact Sheet), so its effect on the horizon is far too small to measure.

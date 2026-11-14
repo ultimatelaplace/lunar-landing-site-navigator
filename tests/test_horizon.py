@@ -39,7 +39,7 @@ def test_destination_distance():
 
 
 def test_flat_ground_horizon_is_level():
-    profile, checked, _ = horizon_profile(flat(), *SITE)
+    profile, checked, _ = horizon_profile(flat(), *SITE, observer_height_m=0.0)
     assert np.all(np.abs(profile) < 0.001)
     assert np.all(checked == 150000.0)
 
@@ -58,7 +58,7 @@ def test_ring_wall_elevation():
         d = great_circle_m(SITE[0], SITE[1], lat, lon)
         return np.where((d >= inner) & (d <= outer), wall_m, 0.0)
 
-    profile, _, _ = horizon_profile(height_at, *SITE)
+    profile, _, _ = horizon_profile(height_at, *SITE, observer_height_m=0.0)
     lo = elevation_angle_deg(R, R + wall_m, outer)
     hi = elevation_angle_deg(R, R + wall_m, inner)
     assert np.all((profile >= lo - 1e-9) & (profile <= hi + 1e-9))
@@ -73,3 +73,9 @@ def test_missing_data_is_reported():
     _, checked, _ = horizon_profile(height_at, *SITE)
     assert 2900.0 < checked[0] < 3100.0
     assert 62000.0 < checked[180] < 64500.0
+
+
+def test_default_observer_is_two_meters_up():
+    profile, _, _ = horizon_profile(flat(), *SITE)
+    expected = -np.degrees(np.arccos(R / (R + 2.0)))
+    assert np.all(np.abs(profile - expected) < 0.002)
