@@ -9,4 +9,4 @@ All times are Netherlands time (CET). Every idea, decision and finished task is 
 ## 14 November 2026
 
 - 09:00: Hackathon starts.
-- 09:56: Project repository created (empty, private). Licence: Apache 2.0.
+- 09:56: Project repository created (private). License: Apache 2.0.
