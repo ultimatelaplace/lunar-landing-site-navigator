@@ -60,3 +60,4 @@ All times are Netherlands time (CET). Every idea, decision and finished task is 
   - When the tool looks for alternatives, it keeps the same start and end dates.
 - 13:23: Grid run finished: 26,045 points, 2027–2028, every 10 minutes (22 minutes on 10 cores). The best grid point gets 66% of full sunlight; a 150 m search around the top points raised this to 77%, so the best places are narrow ridges.
 - 13:32: Team decision on ranking: a site must see Earth's whole disk at least 30% of the time. Among those, the site with the shortest longest period of darkness comes first, then the one with the most sunlight.
+- 14:09: Team decisions on ranking: sites in the list are at least 10 km apart, and longest-darkness values within 24 hours of each other count as equal, so that sunlight decides between them. Code written with SI; the case that prompted the change is now a test.
