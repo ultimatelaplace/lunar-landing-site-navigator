@@ -45,3 +45,4 @@ All times are Netherlands time (CET). Every idea, decision and finished task is 
   - Grid: 2 km. For custom coordinates, the tool uses the nearest computed point and shows how far away it is.
   - Times shown: UTC, the user's local time and lunar local solar time.
   - Data: LOLA south pole elevation map (20 m per pixel) for the terrain; NAIF SPICE files for the Sun, Earth and the Moon's orientation; JPL Horizons as an independent check; Quickmap and Moon Trek for coordinate checks and pictures.
+- 12:05: Code step 1, written with SI: terrain horizon from the LOLA map and Sun and Earth directions from NAIF SPICE. Checked against JPL Horizons at 4 south pole sites on 5 dates in 2027–2028 (40 comparisons): the largest difference is 0.00000001° for the Sun and 0.00003° for Earth.
