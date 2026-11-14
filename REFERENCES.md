@@ -8,6 +8,7 @@ Every data set, tool and library used in Triad is listed here, including open-so
 - **NAIF SPICE toolkit kernels** (NASA/JPL Navigation and Ancillary Information Facility): de440s.bsp, moon_pa_de440_200625.bpc, moon_de440_250416.tf, pck00011.tpc, naif0012.tls. https://naif.jpl.nasa.gov/pub/naif/generic_kernels/
 - **JPL Horizons System** (resource listed on the challenge page), used as an independent check of the Sun and Earth directions: https://ssd.jpl.nasa.gov/horizons/
 - **NASA Moon Trek** (resource listed on the challenge page), used by the team to look at sites and NASA's Artemis III candidate landing regions: https://trek.nasa.gov/moon/
+- **Artemis III Candidate Landing Regions** (13 regions announced in August 2022), outline file A3_Named_regions_SP.geojson downloaded from NASA Moon Trek by the team; stored as docs/data/nasa_artemis_regions_2022.geojson.
 - **LROC QuickMap** (resource listed on the challenge page), used by the team to check site coordinates and heights: https://quickmap.lroc.im-ldi.com/
 - **NASA Moon Fact Sheet**, NSSDC, for the lunar surface pressure: https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html
 - **NASA news release RELEASE24-136**, "NASA Provides Update on Artemis III Moon Landing Regions" (28 October 2024): https://www.nasa.gov/news-release/nasa-provides-update-on-artemis-iii-moon-landing-regions/

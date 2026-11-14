@@ -6,6 +6,7 @@ Space Apps asks every team to say clearly where and how SI tools were used. This
 - The idea, the problem framing and the product decisions came from the team. This includes what the tool shows, the order of the cards, how the "best" site is ranked, how alternatives are found (nearest first, 50 m to 10 km, same dates), the observer height, the years, and the project name.
 - The engineering log records each decision with its time and who made it.
 - The team members checked the results themselves, for example the site coordinates in NASA Moon Trek and LROC QuickMap.
+- The team reviewed the code in VS Code as it was written, found what was missing and asked for changes (for example clearer charts, finer horizon sampling and the ranking rules), and tested it together with Claude Code.
 
 ## What SI did
 - **Technical options:** SI prepared options for some technical choices, such as the grid size, the region, the data sources and the time formats. The team chose among them; the log marks these steps.

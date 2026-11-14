@@ -10,7 +10,8 @@ Team Ultimate Laplace · Eindhoven (virtual)
 
 ## What it does
 
-- **Suggests sites.** It checks 26,045 points from 84°S to the pole, every 10 minutes through 2027 and 2028, and lists the 10 best by the team's rule: Earth's whole disk must be in view at least 30% of the time; then the shortest longest darkness wins (values within 24 hours count as equal), then the most sunlight. Listed sites are at least 10 km apart.
+- **Suggests sites.** It checks 26,045 points (a 2 km grid) from 84°S to the pole, every 10 minutes through 2027 and 2028, then searches every 500 m around the 30 best and lists the 10 best by the team's rule: Earth's whole disk must be in view at least 30% of the time; then the shortest longest darkness wins (values within 24 hours count as equal), then the most sunlight. Listed sites are at least 10 km apart.
+- **Compares with NASA's candidate regions.** For each of NASA's Artemis III candidate regions (outlines from NASA Moon Trek), it shows the best point inside the outline, found on a 500 m grid. Mons Mouton and Slater Plain, which have no published outline, are marked approximate. Peak near Cabeus B is not listed because it lies at about 82°S, outside the computed area.
 - **Shows the conditions.** For any site it shows the share of sunlight, full-sun hours, the longest darkness, the time with Earth fully in view and the longest time without Earth, for each year.
 - **Suggests a landing window.** The 30-day period with the most sunlight in which Earth is in view at least 30% of the time.
 - **Finds alternatives.** If a site cannot be used, it looks at nearby places, nearest first, from 50 m to 10 km away, for the same dates; if none qualifies, it moves the dates.

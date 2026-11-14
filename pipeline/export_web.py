@@ -41,26 +41,42 @@ def main(data_dir):
     sun = (r["sun_hours_2027"] + r["sun_hours_2028"]) / (731 * 24)
     dark = np.maximum(r["longest_dark_h_2027"], r["longest_dark_h_2028"])
     earth = (r["earth_share_2027"] * 365 + r["earth_share_2028"] * 366) / 731
-    top = rank(r["lat"], r["lon"], dark, sun, earth)
+    refined_file = Path(data_dir) / "results" / "refined.npz"
+    if refined_file.exists():
+        f = dict(np.load(refined_file))
+        entries = [(f, k, f"top{k + 1}", f"Suggested site {k + 1}",
+                    "Best place by the team's ranking rule (2 km grid, then a 500 m search around the 30 best candidates)", "")
+                   for k in range(len(f["lat"]))]
+    else:
+        top = rank(r["lat"], r["lon"], dark, sun, earth)
+        entries = [(r, i, f"top{k + 1}", f"Suggested site {k + 1}", "Best grid point by the team's ranking rule", "")
+                   for k, i in enumerate(top)]
+    regions_file = Path(data_dir) / "results" / "regions.npz"
+    if regions_file.exists():
+        g = dict(np.load(regions_file))
+        for k in range(len(g["name"])):
+            approximate = "approximate" in str(g["source"][k])
+            label = f"{g['name'][k]} ({'approximate' if approximate else 'NASA region'})"
+            entries.append((g, k, f"region{k + 1}", label, str(g["source"][k]), str(g["note"][k])))
 
     ring_points, ring_meta = [], []
-    for i in top:
+    for src, i, *_ in entries:
         for d in RING_DISTANCES_M:
             for az in RING_AZIMUTHS_DEG:
-                lat, lon = destination(float(r["lat"][i]), float(r["lon"][i]), az, d)
+                lat, lon = destination(float(src["lat"][i]), float(src["lon"][i]), az, d)
                 ring_points.append((float(lat), float(lon)))
                 ring_meta.append((d, az))
     rings = run_grid.run(data_dir, points=ring_points)
 
     sites = []
     per_site = len(RING_DISTANCES_M) * len(RING_AZIMUTHS_DEG)
-    for k, i in enumerate(top):
+    for k, (src, i, sid, name, source, note) in enumerate(entries):
         sites.append(dict(
-            id=f"top{k + 1}", name=f"Suggested site {k + 1}", source="Best grid point by the team's ranking rule",
-            lat=round(float(r["lat"][i]), 5), lon=round(float(r["lon"][i]), 5),
-            ground_m=round(float(r["ground_m"][i]), 1), checked_km=round(float(r["checked_km"][i]), 1),
-            horizon=[round(float(v), 4) for v in r["horizon_deg"][i]],
-            expected=summary(r, i), ring_offset=k * per_site,
+            id=sid, name=name, source=source, note=note,
+            lat=round(float(src["lat"][i]), 5), lon=round(float(src["lon"][i]), 5),
+            ground_m=round(float(src["ground_m"][i]), 1), checked_km=round(float(src["checked_km"][i]), 1),
+            horizon=[round(float(v), 4) for v in src["horizon_deg"][i]],
+            expected=summary(src, i), ring_offset=k * per_site,
         ))
 
     ring_h = np.round(rings["horizon_deg"] * HORIZON_SCALE).astype("<i2")

@@ -38,5 +38,5 @@ One random point with little sunlight (13%) showed an 80.5-hour change in its lo
 - **Time steps:** results use 10-minute steps, so sunrise, sunset and Earth rise times can be off by up to 10 minutes.
 - **Map edge:** for 3,892 grid points near 84°S, some directions can only be checked out to 121 km instead of 150 km, because the map ends at 80°S. Distant mountains in those directions might be missed.
 - **Stored horizons:** the web app stores horizons in steps of 0.002°, which changes them by at most 0.001°.
-- **Grid spacing:** the suggested sites come from a 2 km grid. A search at 150 m spacing around the best sites found places with up to 77% sunlight instead of 66%, so the best spots are narrow ridges between grid points. The alternative search, which starts 50 m from a site, helps to find them.
+- **Grid spacing:** the whole area is computed on a 2 km grid, and the suggested sites and NASA regions are then searched every 500 m. The best spots are narrow ridges: a search at 150 m spacing found places with more sunlight than the 500 m points next to them. The alternative search, which starts 50 m from a site, helps to find them.
 - **Sun model:** the Sun is treated as a disk of even brightness.

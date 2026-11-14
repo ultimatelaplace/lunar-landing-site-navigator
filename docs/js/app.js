@@ -12,14 +12,19 @@ let meta, sites, bodies, stepH, grid = null;
 
 async function load() {
   const [m, s, b] = await Promise.all([
-    fetch("data/meta.json").then((r) => r.json()),
-    fetch("data/sites.json").then((r) => r.json()),
-    fetch("data/bodies.bin").then((r) => r.arrayBuffer()),
+    fetch("data/meta.json", { cache: "no-cache" }).then((r) => r.json()),
+    fetch("data/sites.json", { cache: "no-cache" }).then((r) => r.json()),
+    fetch("data/bodies.bin", { cache: "no-cache" }).then((r) => r.arrayBuffer()),
   ]);
   meta = m; sites = s; bodies = new Float32Array(b);
   stepH = meta.step_s / 3600;
   const select = $("site");
-  for (const site of sites) select.add(new Option(`${site.name} (${fmtLat(site.lat)}, ${fmtLon(site.lon)})`, site.id));
+  const groups = [["Suggested by Triad", (s) => s.id.startsWith("top")], ["NASA Artemis III regions and known sites", (s) => s.id.startsWith("region")]];
+  for (const [label, test] of groups) {
+    const g = document.createElement("optgroup"); g.label = label;
+    for (const site of sites.filter(test)) g.appendChild(new Option(`${site.name} (${fmtLat(site.lat)}, ${fmtLon(site.lon)})`, site.id));
+    select.appendChild(g);
+  }
   select.addEventListener("change", () => choose(sites.find((x) => x.id === select.value)));
   wire();
   choose(sites[0]);
@@ -274,8 +279,8 @@ async function useOwnCoordinates() {
   $("own-note").textContent = "Loading the grid (about 19 MB, only once)…";
   if (!grid) {
     const [p, h] = await Promise.all([
-      fetch("data/grid_points.bin").then((r) => r.arrayBuffer()),
-      fetch("data/grid_horizon.bin").then((r) => r.arrayBuffer()),
+      fetch("data/grid_points.bin", { cache: "no-cache" }).then((r) => r.arrayBuffer()),
+      fetch("data/grid_horizon.bin", { cache: "no-cache" }).then((r) => r.arrayBuffer()),
     ]);
     grid = { points: new Float32Array(p), horizon: new Int16Array(h) };
   }
@@ -309,7 +314,7 @@ async function findAlternatives() {
   if (site.ring_offset === undefined) { out.innerHTML = "<p class='small'>Alternatives are prepared for the suggested sites.</p>"; return; }
   out.innerHTML = "<p class='small'>Checking nearby places…</p>";
   await new Promise((r) => setTimeout(r, 20));
-  if (!state.rings) state.rings = new Int16Array(await fetch("data/rings.bin").then((r) => r.arrayBuffer()));
+  if (!state.rings) state.rings = new Int16Array(await fetch("data/rings.bin", { cache: "no-cache" }).then((r) => r.arrayBuffer()));
   const perSite = meta.ring_distances_m.length * meta.ring_azimuths_deg.length;
   const [yFrom, yTo] = yearRange();
   const len = state.window.end - state.window.start;
