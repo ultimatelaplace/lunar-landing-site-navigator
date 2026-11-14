@@ -39,3 +39,9 @@ All times are Netherlands time (CET). Every idea, decision and finished task is 
   7. Alternatives: If anything puts the landing at risk (for example, a solar flare or a meteorite impact at the site), the tool looks for alternatives the same way it finds the best option. It starts with the nearest places, at least 50 m away and at most 10 km away, in the same date range. Only if no place is found does it change the date.
   8. Printout: The critical data (date, time, coordinates and elevation) can be printed, together with the last two visual cards if needed.
 - 11:40: Project name chosen by the team: Triad. Proposed by K. Ü.; the other options were Zenith, Solstice and Selenelion.
+- 11:45: Technical plan; the team made these choices:
+  - Years: 2027 and 2028, every 10 minutes.
+  - Region: from 84°S to the south pole.
+  - Grid: 2 km. For custom coordinates, the tool uses the nearest computed point and shows how far away it is.
+  - Times shown: UTC, the user's local time and lunar local solar time.
+  - Data: LOLA south pole elevation map (20 m per pixel) for the terrain; NAIF SPICE files for the Sun, Earth and the Moon's orientation; JPL Horizons as an independent check; Quickmap and Moon Trek for coordinate checks and pictures.
