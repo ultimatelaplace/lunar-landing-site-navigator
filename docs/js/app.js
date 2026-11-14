@@ -49,6 +49,8 @@ function refreshYear() {
   const [from, to] = yearRange();
   const days = (to - from) / STEPS_PER_DAY;
   $("day").max = days - 1;
+  $("day-out").min = `${state.year}-01-01`;
+  $("day-out").max = `${state.year}-12-31`;
   state.day = Math.min(state.day, days - 1);
   const m = metrics(state.series, from, to, stepH);
   const lost = m.flatSunShare > 0 ? 1 - m.sunShare / m.flatSunShare : 0;
@@ -192,7 +194,7 @@ function refreshMoment() {
   const t = from + state.day * STEPS_PER_DAY + state.time;
   state.t = t;
   const date = utcOf(t);
-  $("day-out").textContent = date.toISOString().slice(0, 10);
+  if (document.activeElement !== $("day-out")) $("day-out").value = date.toISOString().slice(0, 10);
   $("time-out").textContent = `${date.toISOString().slice(11, 16)} UTC`;
   const s = state.series, site = state.site;
   const b = t * 6;
@@ -356,6 +358,14 @@ function wire() {
     refreshYear();
   }));
   $("day").addEventListener("input", (e) => { state.day = Number(e.target.value); refreshMoment(); });
+  // typed or picked date: only dates inside the selected year are accepted
+  $("day-out").addEventListener("change", (e) => {
+    const [y, m, d] = e.target.value.split("-").map(Number);
+    if (y !== state.year || !m || !d) { e.target.value = utcOf(yearRange()[0] + state.day * STEPS_PER_DAY).toISOString().slice(0, 10); return; }
+    state.day = Math.round((Date.UTC(y, m - 1, d) - Date.UTC(y, 0, 1)) / 86400000);
+    $("day").value = state.day;
+    refreshMoment();
+  });
   $("time").addEventListener("input", (e) => { state.time = Number(e.target.value); refreshMoment(); });
   $("play").addEventListener("click", () => {
     if (state.playing) { clearInterval(state.playing); state.playing = null; $("play").textContent = "▶ Play"; return; }
