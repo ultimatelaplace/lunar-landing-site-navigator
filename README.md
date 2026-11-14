@@ -30,8 +30,8 @@ See [ACCURACY.md](ACCURACY.md). In short: the Sun and Earth directions match JPL
 
 ## Team
 
-- **K. Ü.** (team captain): ideas and problem framing, product decisions, ranking rule, project name.
-- **A. K. G.**: objectives summary, product decisions.
+- **K. Ü.** (team captain): ideas and problem framing, product decisions, ranking rule, project name; with A. K. G., checked all 10 suggested sites in LROC QuickMap and NASA Moon Trek.
+- **A. K. G.**: objectives summary, product decisions; with K. Ü., checked all 10 suggested sites in LROC QuickMap and NASA Moon Trek.
 
 Every idea and decision is recorded with its time in the [engineering log](ENGINEERING_LOG.md).
 
