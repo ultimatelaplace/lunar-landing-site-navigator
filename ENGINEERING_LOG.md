@@ -51,4 +51,4 @@ All times are Netherlands time (CET). Every idea, decision and finished task is 
   - Sunlight is measured as the visible fraction of the Sun's disk, because a solar panel's power depends on it.
   - Communication with Earth counts only when Earth's whole disk is above the horizon.
 - 12:16: The Moon's atmosphere is ignored for refraction. Its surface pressure is about 3 × 10⁻¹⁵ bar (NASA Moon Fact Sheet), so its effect on the horizon is far too small to measure.
-- 12:35: Code step 2, written with SI: the visible share of the Sun's disk and whether Earth's whole disk is above the horizon, following the team's decisions.
+- 12:22: Code step 2, written with SI: the visible share of the Sun's disk and whether Earth's whole disk is above the horizon, following the team's decisions.
