@@ -86,8 +86,9 @@
     <ul class="small" id="accuracy">
       <li>Sun and Earth directions match JPL Horizons within 0.00003° (40 checks at 4 sites on 5 dates).</li>
       <li>The terrain map is read without a pixel shift (checked against Shackleton crater and against a second LOLA map).</li>
+      <li>Sampling the horizon twice as finely changes the share of sunlight by at most 0.17 percentage points and the longest darkness at the suggested sites by at most 1.5 hours.</li>
       <li>The Moon's atmosphere is ignored for refraction: its surface pressure is about 3 × 10⁻¹⁵ bar (NASA Moon Fact Sheet).</li>
-      <li>Results use 10-minute steps; times of sunrise, sunset and Earth rise can be off by up to 10 minutes.</li>
+      <li>Limits: the terrain map has 20 m pixels, and results use 10-minute steps, so event times can be off by up to 10 minutes. Full details are in ACCURACY.md in the source code.</li>
     </ul>
   </section>
 </main>
