@@ -88,3 +88,4 @@ All times are Netherlands time (CET). Every idea, decision and finished task is 
 - 13:19: Demo video uploaded as unlisted to the team's YouTube channel: https://youtu.be/fUmWoWfzyVA (it opens without signing in).
 - 13:21: Link test: A. K. G. opened the video, the live app and the repository in a private window and on a phone; all of them opened.
 - 13:26: Submission form texts approved by the team (summary, detailed description, SI use, NASA data, other references). REFERENCES.md now also lists the tools used only for the demo video and slides.
+- 13:45: Submission form completed and checked by the team: the summary was shortened to 195 words (the form suggests 50 to 200), and the project title became "Triad: Sunlight and Earth View for Lunar South Pole Landings" so that it says what the tool does. K. Ü. submitted the project for judging; the Space Apps page confirmed it ("Last Submitted: 15 November 2026", 13:45 Netherlands time).
