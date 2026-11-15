@@ -75,3 +75,5 @@ All times are Netherlands time (CET). Every idea, decision and finished task is 
 ## 15 November 2026
 
 - 09:19: K. Ü. and A. K. G. together found the 7 new suggested sites in LROC QuickMap at the right coordinates (screenshots in docs/quickmap, named by coordinates). Like the first ones, they sit on crater rims and ridges. All 10 suggested sites are now checked.
+- 09:49: New-user test: K. Ü. wrote 7 small tasks covering every part of the app, and A. K. G. did all of them without help. His note: the suggested landing window figures were too small to read easily.
+- 09:49: Changes from the test, team decisions: the suggested landing window is shown in large boxes, and the "Flat horizon" button now changes all numbers, so users can compare the real terrain with a smooth Moon.

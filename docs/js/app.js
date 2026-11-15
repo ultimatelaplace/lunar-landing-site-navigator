@@ -1,5 +1,5 @@
-import { series, metrics } from "./physics.js";
-import { loadRegions, regionsAt, distanceM } from "./regions.js";
+import { series, metrics } from "./physics.js?v=2";
+import { loadRegions, regionsAt, distanceM } from "./regions.js?v=2";
 
 const ALREADY_LISTED_M = 1000; // team decision: a place within 1 km of a listed site counts as already listed
 
@@ -59,6 +59,12 @@ function choose(site) {
 
 function yearRange() { return YEARS[state.year]; }
 
+// In "Flat horizon" mode every number and chart uses a smooth Moon without terrain.
+function view() {
+  const s = state.series;
+  return state.mode === "flat" ? { ...s, sun: s.sunFlat, earth: s.earthFlat } : s;
+}
+
 function refreshYear() {
   const [from, to] = yearRange();
   const days = (to - from) / STEPS_PER_DAY;
@@ -66,10 +72,15 @@ function refreshYear() {
   $("day-out").min = `${state.year}-01-01`;
   $("day-out").max = `${state.year}-12-31`;
   state.day = Math.min(state.day, days - 1);
-  const m = metrics(state.series, from, to, stepH);
-  const lost = m.flatSunShare > 0 ? 1 - m.sunShare / m.flatSunShare : 0;
-  $("m-lost").textContent = lost >= 0 ? pct(lost) : `+${pct(-lost)}`;
-  $("m-lost-label").textContent = lost >= 0 ? "sunlight lost to terrain per year" : "more sunlight than on flat ground: this high place sees past the flat horizon";
+  const real = metrics(state.series, from, to, stepH);
+  const m = metrics(view(), from, to, stepH);
+  const lost = real.flatSunShare > 0 ? 1 - real.sunShare / real.flatSunShare : 0;
+  $("m-lost").textContent = state.mode === "flat" ? "0%" : lost >= 0 ? pct(lost) : `+${pct(-lost)}`;
+  $("m-lost-label").textContent = state.mode === "flat" ? "sunlight lost to terrain: none on flat ground"
+    : lost >= 0 ? "sunlight lost to terrain per year" : "more sunlight than on flat ground: this high place sees past the flat horizon";
+  $("mode-note").textContent = state.mode === "flat"
+    ? "Showing a smooth Moon without terrain, for comparison. Switch to \"With terrain\" for the real values."
+    : "Values use the real terrain.";
   $("m-sunh").textContent = `${Math.round(m.sunShare * days * 24)} h (${pct(m.sunShare)})`;
   $("m-dark").textContent = fmtH(m.longestDarkH);
   $("m-earth").textContent = pct(m.earthShare);
@@ -82,7 +93,7 @@ function refreshYear() {
 
 // The 30-day window with the most sunlight in which Earth is in view at least 30% of the time.
 function suggestWindow(from, to) {
-  const s = state.series, len = WINDOW_DAYS * STEPS_PER_DAY;
+  const s = view(), len = WINDOW_DAYS * STEPS_PER_DAY;
   const sunSum = new Float64Array(to - from + 1), earthSum = new Float64Array(to - from + 1);
   for (let t = from; t < to; t++) {
     sunSum[t - from + 1] = sunSum[t - from] + s.sun[t];
@@ -108,6 +119,7 @@ function color(f, blockedPart) {
 
 function cellColor(t) {
   const s = state.series;
+  if (state.mode === "flat") return color(s.sunFlat[t], 0);
   if (state.mode === "flat") return color(s.sunFlat[t], 0);
   if (state.mode === "blocked") return color(s.sun[t], s.sunFlat[t] - s.sun[t] > 0.001 ? 1 : 0);
   return color(s.sun[t], 0);
@@ -140,7 +152,7 @@ function heatmap(canvas, firstStep, days, dayWidth, title) {
   ctx.save(); ctx.translate(14, PAD.top + plotH / 2); ctx.rotate(-Math.PI / 2); ctx.textAlign = "center";
   ctx.fillText("time of day (UTC)", 0, 0); ctx.restore();
   // Earth strip: blue where Earth's whole disk is in view at any time of that day slot
-  const y0 = PAD.top + plotH + 10, s = state.series, steps = days * STEPS_PER_DAY;
+  const y0 = PAD.top + plotH + 10, s = view(), steps = days * STEPS_PER_DAY;
   for (let x = 0; x < plotW; x++) {
     const a = firstStep + Math.floor((x / plotW) * steps), b = firstStep + Math.floor(((x + 1) / plotW) * steps);
     let seen = 0; for (let t = a; t < Math.max(b, a + 1); t++) seen += s.earth[t];
@@ -199,8 +211,12 @@ function drawMonth() {
     const k = state.t - w.start;
     marker(ctx, x0 + Math.floor(k / STEPS_PER_DAY) * 48 + 24, y0 + (k % STEPS_PER_DAY) * 2 + 1, plotH, y0);
   }
-  const m = metrics(state.series, w.start, w.end, stepH);
-  $("window-out").textContent = `${utcOf(w.start).toISOString().slice(0, 10)} to ${utcOf(w.end).toISOString().slice(0, 10)} · sunlight ${pct(m.sunShare)} · longest darkness ${fmtH(m.longestDarkH)} · Earth in view ${pct(m.earthShare)}` + (w.ok ? "" : " · no 30-day window here keeps Earth in view 30% of the time");
+  const m = metrics(view(), w.start, w.end, stepH);
+  $("w-dates").textContent = `${utcOf(w.start).toISOString().slice(0, 10)} → ${utcOf(w.end).toISOString().slice(0, 10)}`;
+  $("w-sun").textContent = pct(m.sunShare);
+  $("w-dark").textContent = fmtH(m.longestDarkH);
+  $("w-earth").textContent = pct(m.earthShare);
+  $("window-out").textContent = w.ok ? "" : "No 30-day window at this site keeps Earth in view 30% of the time; shown is the sunniest one.";
 }
 
 function refreshMoment() {
@@ -210,7 +226,7 @@ function refreshMoment() {
   const date = utcOf(t);
   if (document.activeElement !== $("day-out")) $("day-out").value = date.toISOString().slice(0, 10);
   $("time-out").textContent = `${date.toISOString().slice(11, 16)} UTC`;
-  const s = state.series, site = state.site;
+  const s = view(), site = state.site;
   const b = t * 6;
   const subSolarLon = Math.atan2(bodies[b + 1], bodies[b]) * 180 / Math.PI;
   const lunarHours = ((12 + (site.lon - subSolarLon) / 15) % 24 + 24) % 24;
@@ -232,7 +248,7 @@ function refreshMoment() {
 
 function drawHorizon() {
   const canvas = $("horizon"), ctx = canvas.getContext("2d");
-  const W = canvas.width, H = canvas.height, s = state.series, site = state.site, t = state.t;
+  const W = canvas.width, H = canvas.height, s = view(), site = state.site, t = state.t;
   const [from] = yearRange();
   const dayStart = from + state.day * STEPS_PER_DAY;
   const profile = state.mode === "flat" ? site.horizon.map(() => 0) : site.horizon;
@@ -396,7 +412,7 @@ function wire() {
   document.querySelectorAll("[data-mode]").forEach((b) => b.addEventListener("click", () => {
     state.mode = b.dataset.mode;
     document.querySelectorAll("[data-mode]").forEach((x) => x.classList.toggle("on", x === b));
-    drawYear(); drawMonth(); drawHorizon();
+    refreshYear();
   }));
   document.querySelectorAll("[data-year]").forEach((b) => b.addEventListener("click", () => {
     state.year = Number(b.dataset.year);

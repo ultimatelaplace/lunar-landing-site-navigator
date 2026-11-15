@@ -37,6 +37,7 @@ button:hover { border-color: var(--accent); }
 .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; margin: 12px 0; }
 .stats div { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
 .stats span { display: block; font-size: 22px; font-weight: 600; }
+.stats.window div { border-color: #2f80ed; background: #f3f8ff; }
 .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; }
 .grid div { border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; }
 .grid small { display: block; color: var(--muted); font-size: 12px; }

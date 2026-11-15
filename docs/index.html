@@ -41,6 +41,7 @@
       <div class="match" id="own-match" hidden></div>
       <p class="small" id="own-note">Covers 84°S to the pole. The tool uses the nearest computed point (2 km grid) and says how far away it is.</p>
     </div>
+    <p class="small" id="mode-note"></p>
     <div class="stats">
       <div><span id="m-lost">–</span><small id="m-lost-label">sunlight lost to terrain per year</small></div>
       <div><span id="m-sunh">–</span><small>full-sun hours per year</small></div>
@@ -73,7 +74,14 @@
       <output id="time-out"></output>
       <button type="button" id="play">▶ Play</button>
     </div>
-    <h3>Suggested landing window <span id="window-out" class="small"></span></h3>
+    <h3>Suggested landing window</h3>
+    <div class="stats window">
+      <div><span id="w-dates">–</span><small>dates (30 days, UTC)</small></div>
+      <div><span id="w-sun">–</span><small>sunlight in this window</small></div>
+      <div><span id="w-dark">–</span><small>longest darkness in this window</small></div>
+      <div><span id="w-earth">–</span><small>time with Earth fully in view</small></div>
+    </div>
+    <p class="small" id="window-out"></p>
     <canvas id="month"></canvas>
   </section>
 
@@ -97,6 +105,6 @@
 
 <footer class="small">Ultimate Laplace · K. Ü. (team captain), A. K. G. · Source code under the Apache 2.0 license. SI-assisted project; see the engineering log.</footer>
 
-<script type="module" src="js/app.js?v=5"></script>
+<script type="module" src="js/app.js?v=6"></script>
 </body>
 </html>

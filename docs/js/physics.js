@@ -68,7 +68,7 @@ export function series(bodies, count, profile, latDeg, lonDeg, groundM, observer
   const frame = siteFrame(latDeg, lonDeg, groundM + observerM);
   const flat = new Array(360).fill(-Math.acos(MOON_RADIUS_M / (MOON_RADIUS_M + observerM)) / DEG);
   const out = {
-    sun: new Float32Array(count), sunFlat: new Float32Array(count), earth: new Uint8Array(count),
+    sun: new Float32Array(count), sunFlat: new Float32Array(count), earth: new Uint8Array(count), earthFlat: new Uint8Array(count),
     sunAz: new Float32Array(count), sunEl: new Float32Array(count),
     earthAz: new Float32Array(count), earthEl: new Float32Array(count),
   };
@@ -81,6 +81,7 @@ export function series(bodies, count, profile, latDeg, lonDeg, groundM, observer
     out.sun[t] = visibleFraction(profile, sa, se, sr);
     out.sunFlat[t] = visibleFraction(flat, sa, se, sr);
     out.earth[t] = wholeDiskVisible(profile, ea, ee, er) ? 1 : 0;
+    out.earthFlat[t] = wholeDiskVisible(flat, ea, ee, er) ? 1 : 0;
     out.sunAz[t] = sa; out.sunEl[t] = se; out.earthAz[t] = ea; out.earthEl[t] = ee;
   }
   return out;
