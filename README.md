@@ -6,6 +6,8 @@ Triad is a web tool for the NASA Space Apps Challenge 2026 challenge "Lunar Land
 
 Team Ultimate Laplace · Eindhoven (virtual)
 
+*Triad is a student project. It is not made or endorsed by NASA. It uses NASA data, which are credited in [REFERENCES.md](REFERENCES.md).*
+
 **Live app:** the link is added when the repository becomes public.
 
 ## What it does
@@ -52,3 +54,4 @@ python3 -m http.server --directory docs           # then open http://localhost:8
 - All data, tools and libraries: [REFERENCES.md](REFERENCES.md).
 - How Super Intelligence (SI) was used: [SI_USAGE.md](SI_USAGE.md).
 - License: Apache 2.0 ([LICENSE](LICENSE)).
+- Demo: a 30-second video ([docs/demo/triad-demo-30s.mp4](docs/demo/triad-demo-30s.mp4)); a 7-slide deck is included as extra material ([docs/demo/triad-7-slides.pdf](docs/demo/triad-7-slides.pdf)). Both are made by [demo/](demo/) from screenshots of the app.

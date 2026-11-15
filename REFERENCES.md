@@ -13,6 +13,8 @@ Every data set, tool and library used in Triad is listed here, including open-so
 - **NASA Moon Fact Sheet**, NSSDC, for the lunar surface pressure: https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html
 - **NASA news release RELEASE24-136**, "NASA Provides Update on Artemis III Moon Landing Regions" (28 October 2024): https://www.nasa.gov/news-release/nasa-provides-update-on-artemis-iii-moon-landing-regions/
 
+- **Demo video background:** LRO image of suggested site 1 via LROC QuickMap (NASA/GSFC/Arizona State University), screenshot by the team.
+
 ## Other references
 
 - **Gazetteer of Planetary Nomenclature**, IAU Working Group for Planetary System Nomenclature and USGS Astrogeology, for feature coordinates (for example, Shackleton crater): https://planetarynames.wr.usgs.gov/

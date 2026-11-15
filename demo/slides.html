@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Triad · 7 slides</title>
+<style>
+@page { size: 1280px 720px; margin: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial, Helvetica, sans-serif; color: #16202c; }
+.s { width: 1280px; height: 720px; padding: 52px 64px; position: relative; page-break-after: always; overflow: hidden; background: #fff; }
+.dark { background: #0b1220; color: #fff; }
+h1 { font-size: 46px; margin-bottom: 22px; }
+h2 { font-size: 22px; color: #d9822b; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+p, li { font-size: 25px; line-height: 1.4; }
+ul { margin-left: 28px; } li { margin-bottom: 10px; }
+.foot { position: absolute; left: 64px; right: 64px; bottom: 22px; font-size: 15px; color: #7a8796; display: flex; justify-content: space-between; }
+.dark .foot { color: #9fb3c8; }
+.si { position: absolute; top: 18px; right: 22px; background: #0b1220; color: #fff; font-size: 14px; font-weight: bold; padding: 6px 12px; border-radius: 6px; }
+.dark .si { background: #24324a; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; align-items: start; }
+img { width: 100%; border: 1px solid #d8dee6; border-radius: 8px; }
+.big { font-size: 64px; font-weight: bold; color: #f2c94c; }
+.box { border: 2px solid #2f80ed; border-radius: 10px; padding: 14px 18px; background: #f3f8ff; margin-bottom: 14px; }
+.box b { font-size: 34px; display: block; color: #2f80ed; }
+.flow { display: flex; gap: 14px; align-items: stretch; margin-top: 18px; }
+.flow div { flex: 1; border: 2px solid #d8dee6; border-radius: 10px; padding: 16px; font-size: 20px; line-height: 1.35; }
+.flow b { display: block; font-size: 22px; margin-bottom: 6px; color: #d9822b; }
+</style></head><body>
+
+<section class="s dark"><span class="si">SI-assisted project</span>
+  <div style="margin-top:120px">
+    <div class="big" style="font-size:110px">Triad</div>
+    <p style="font-size:38px;font-weight:bold;margin-top:18px">Where can a lander at the Moon's south pole<br>keep the Sun and see Earth?</p>
+    <p style="margin-top:28px;color:#9fb3c8">Team Ultimate Laplace · NASA Space Apps Challenge 2026 · Lunar Landing Site Navigator · Eindhoven</p>
+    <p style="margin-top:14px;color:#7f93a8;font-size:18px">Triad is a student project. It is not made or endorsed by NASA.</p>
+  </div>
+  <div class="foot"><span>1 / 7</span><span>Team: K. Ü. (captain), A. K. G.</span></div>
+</section>
+
+<section class="s"><span class="si">SI-assisted project</span>
+  <h2>The problem</h2><h1>The south pole is the hardest place to land</h1>
+  <ul>
+    <li>Near the equator, Earth stays in view and the Sun is seen for longer.</li>
+    <li>At the south pole, ridges and craters block the low Sun and Earth: <b>no power, no radio contact, freezing cold.</b></li>
+    <li>A lander gets its power from solar panels and needs Earth in view to talk to us.</li>
+    <li>So choosing correct, error-free landing coordinates and dates is critical.</li>
+  </ul>
+  <div class="foot"><span>2 / 7</span><span>In the team's own words, from the project summary</span></div>
+</section>
+
+<section class="s"><span class="si">SI-assisted project</span>
+  <h2>What Triad does</h2><h1>Best sites, best dates, alternatives in seconds</h1>
+  <div class="two"><ul>
+    <li>Checks <b>26,045 places</b> from 84°S to the pole, every 10 minutes through 2027–2028.</li>
+    <li>Suggests the 10 best sites and a 30-day landing window.</li>
+    <li>Shows the best point in each of <b>NASA's Artemis III regions</b>.</li>
+    <li>If a site can't be used, finds alternatives from 50 m away.</li>
+    <li>Your own coordinates, and a printable report.</li>
+  </ul><img src="site.png"></div>
+  <div class="foot"><span>3 / 7</span><span>Live app: ultimatelaplace.github.io/lunar-landing-site-navigator</span></div>
+</section>
+
+<section class="s"><span class="si">SI-assisted project</span>
+  <h2>How it works</h2><h1>NASA data in, clear answers out</h1>
+  <div class="flow">
+    <div><b>1 · Terrain</b>NASA LRO LOLA south pole map, 20 m pixels. From each place we look out 150 km in 360 directions to find the horizon.</div>
+    <div><b>2 · Sun and Earth</b>NAIF SPICE (NASA/JPL) gives their directions every 10 minutes, including the Moon's wobble (libration).</div>
+    <div><b>3 · Visibility</b>Share of the Sun's disk above the terrain (power), and Earth's whole disk in view (radio).</div>
+    <div><b>4 · Ranking</b>Team rule: Earth in view ≥ 30% of the time, then the shortest darkness, then the most sunlight.</div>
+  </div>
+  <p style="margin-top:26px">Checked against <b>NASA JPL Horizons</b>, <b>NASA Moon Trek</b> and <b>LROC QuickMap</b>.</p>
+  <div class="foot"><span>4 / 7</span><span>Python (NumPy, SpiceyPy) · HTML, CSS, JavaScript</span></div>
+</section>
+
+<section class="s"><span class="si">SI-assisted project</span>
+  <h2>See it live</h2><h1>A calendar of sunlight, and the sky at any moment</h1>
+  <div class="two"><img src="year.png"><img src="horizon.png"></div>
+  <p style="margin-top:16px;font-size:21px">Left: each column is a day; yellow means sunlight, blue means Earth in view. Right: the horizon all around the site, with the Sun and Earth moving and the numbers updating.</p>
+  <div class="foot"><span>5 / 7</span><span>Play button, date picker and three views: with terrain, flat horizon, blocked by terrain</span></div>
+</section>
+
+<section class="s"><span class="si">SI-assisted project</span>
+  <h2>What we found</h2><h1>Small moves, huge differences</h1>
+  <div class="two"><div>
+    <div class="box"><b>66% → 21%</b>Moving only 50 m from suggested site 2 can cut the sunlight from 66% to 21% and stretch the longest darkness from 9 to 147 days (2027).</div>
+    <div class="box"><b>4 of 10</b>of Triad's suggested sites lie inside NASA's Artemis III candidate regions, although Triad did not look at the regions when choosing them.</div>
+    <div class="box"><b>82%</b>sunlight at the best point of NASA's Connecting Ridge region.</div>
+  </div><img src="alternatives.png"></div>
+  <div class="foot"><span>6 / 7</span><span>Right: alternatives found 50 m away, for the same dates</span></div>
+</section>
+
+<section class="s dark"><span class="si">SI-assisted project</span>
+  <h2 style="color:#f2c94c">Can you trust it?</h2><h1>Checked, measured, tested</h1>
+  <ul>
+    <li>Sun and Earth directions match <b>NASA JPL Horizons within 0.00003°</b> (40 checks).</li>
+    <li>Terrain map read without a pixel shift (Shackleton crater, second LOLA map).</li>
+    <li>Sampling twice as finely changes the sunlight by at most 0.17 percentage points.</li>
+    <li>A first-time user did all 7 test tasks without help. All 10 sites checked by the team in LROC QuickMap.</li>
+  </ul>
+  <p style="margin-top:22px;color:#9fb3c8;font-size:21px">Live app: ultimatelaplace.github.io/lunar-landing-site-navigator · Code: github.com/ultimatelaplace/lunar-landing-site-navigator<br>Ideas and decisions by the team; code written with Claude Code (SI), see SI_USAGE.md.<br>Triad is a student project. It is not made or endorsed by NASA.</p>
+  <div class="foot"><span>7 / 7</span><span>Team Ultimate Laplace · K. Ü. (captain), A. K. G.</span></div>
+</section>
+</body></html>
