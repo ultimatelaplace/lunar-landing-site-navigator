@@ -39,6 +39,26 @@ async function load() {
   });
   wire();
   choose(sites[0]);
+  applyLink(new URLSearchParams(location.search));
+}
+
+// Opens a given view from the address, e.g. ?site=top1&year=2027&mode=terrain&date=2027-10-01&time=12:00&show=horizon
+function applyLink(q) {
+  const site = sites.find((x) => x.id === q.get("site"));
+  if (q.get("year") === "2028") document.querySelector('[data-year="2028"]').click();
+  if (["flat", "blocked"].includes(q.get("mode"))) document.querySelector(`[data-mode="${q.get("mode")}"]`).click();
+  if (site) { $("site").value = site.id; choose(site); }
+  const date = q.get("date");
+  if (date && date.startsWith(String(state.year))) { $("day-out").value = date; $("day-out").dispatchEvent(new Event("change")); }
+  const time = /^(\d{2}):(\d{2})$/.exec(q.get("time") || "");
+  if (time) { state.time = Math.min(143, Number(time[1]) * 6 + Math.floor(Number(time[2]) / 10)); $("time").value = state.time; refreshMoment(); }
+  const cards = { site: "card-site", time: "card-time", year: "card-year", horizon: "card-horizon", accuracy: "card-accuracy" };
+  const target = cards[q.get("show")];
+  if (target) $(target).scrollIntoView({ block: "start" });
+  // ?only=horizon shows a single card on its own, used to make the demo frames
+  const only = (q.get("only") || "").split(",").map((k) => cards[k]).filter(Boolean);
+  if (only.length) document.querySelectorAll("header, footer, main > section").forEach((el) => { el.hidden = !only.includes(el.id); });
+  if (q.get("alternatives") === "1") findAlternatives();
 }
 
 const fmtLat = (v) => `${Math.abs(v).toFixed(3)}°S`;
@@ -230,7 +250,7 @@ function refreshMoment() {
   const b = t * 6;
   const subSolarLon = Math.atan2(bodies[b + 1], bodies[b]) * 180 / Math.PI;
   const lunarHours = ((12 + (site.lon - subSolarLon) / 15) % 24 + 24) % 24;
-  const local = new Intl.DateTimeFormat(undefined, { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", timeZoneName: "short" }).format(date);
+  const local = new Intl.DateTimeFormat("en-US", { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", timeZoneName: "short" }).format(date);
   const sunText = s.sun[t] >= 0.999 ? "Sun fully up" : s.sun[t] > 0 ? `Sun ${Math.round(100 * s.sun[t])}% visible` : "Dark";
   const facts = [
     ["Latitude", fmtLat(site.lat)], ["Longitude", fmtLon(site.lon)], ["Ground elevation", `${Math.round(site.ground_m)} m`],
