@@ -49,7 +49,7 @@ frames = []
 def add(img, count): frames.extend([img] * count)  # count is a number of frames at 10 per second
 
 add(mark(card([("Ice in the craters. Sunlight on the ridges.", 40, True, "white"),
-               ("The Moon's south pole could be humanity's first home there.", 34, True, "white"),
+               ("The Moon's south pole could be humanity's first home on the Moon.", 34, True, "white"),
                ("But move just 50 meters, and a lander can", 38, True, "#f2c94c"),
                ("lose two-thirds of its sunlight.", 38, True, "#f2c94c"),
                ("Triad finds the right place.", 30, False, "#c8d2de")],

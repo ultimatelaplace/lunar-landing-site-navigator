@@ -83,3 +83,4 @@ All times are Netherlands time (CET). Every idea, decision and finished task is 
 - 10:28: Team question about NASA's name and logo: the rules forbid NASA logos and other design elements, not naming NASA as a data source. The Moon Trek logo was blurred out of the two Moon Trek screenshots, and the app, README, video and slides now say: "Triad is a student project. It is not made or endorsed by NASA."
 - 10:35: References check: A. K. G. and K. Ü. opened every link in REFERENCES.md one by one; all of them opened.
 - 10:35: English check: A. K. G. read the video captions and the slides and found no mistakes. A second check with SI suggested two small wording changes.
+- 10:37: Two wording changes approved by the team: the hook now says "humanity's first home on the Moon", and slide 2 says it is based on the team's project summary.
