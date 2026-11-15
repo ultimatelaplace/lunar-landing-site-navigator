@@ -71,3 +71,7 @@ All times are Netherlands time (CET). Every idea, decision and finished task is 
 - 17:05: The best points inside NASA's regions did better than our 2 km suggestions (Connecting Ridge: 82% sunlight; de Gerlache Rim: 155 hours longest darkness). Team decision: search every 500 m around the 30 best grid candidates and choose the 10 suggested sites again. Three sites stayed in the list and seven are new; the seven new ones still need QuickMap checks.
 - 17:08: Team request: the date next to the day slider can now be typed or picked from a calendar; it moves the slider and all cards, and only dates in the chosen year are accepted.
 - 17:11: Team request: the site list marks suggested sites that lie inside a NASA Artemis III region (sites 1, 3, 5 and 8). When users enter their own coordinates, the tool says if the place is inside a NASA region, or already in the list within 1 km, with a button to open that site. A test checks that the browser and the Python code agree on 3,000 points.
+
+## 15 November 2026
+
+- 09:19: K. Ü. and A. K. G. together found the 7 new suggested sites in LROC QuickMap at the right coordinates (screenshots in docs/quickmap, named by coordinates). Like the first ones, they sit on crater rims and ridges. All 10 suggested sites are now checked.
