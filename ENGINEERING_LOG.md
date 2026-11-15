@@ -86,3 +86,4 @@ All times are Netherlands time (CET). Every idea, decision and finished task is 
 - 10:37: Two wording changes approved by the team: the hook now says "humanity's first home on the Moon", and slide 2 says it is based on the team's project summary.
 - 13:03: Published with the team's approval: the repository is now public and the app is live on GitHub Pages (https://ultimatelaplace.github.io/lunar-landing-site-navigator/). The live site was tested: all 25 sites load, alternatives and the own-coordinates checks work, no errors.
 - 13:19: Demo video uploaded as unlisted to the team's YouTube channel: https://youtu.be/fUmWoWfzyVA (it opens without signing in).
+- 13:21: Link test: A. K. G. opened the video, the live app and the repository in a private window and on a phone; all of them opened.
