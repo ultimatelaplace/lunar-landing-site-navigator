@@ -28,6 +28,7 @@ Every data set, tool and library used in Triad is listed here, including open-so
 - SpiceyPy (MIT license), the Python interface to the NAIF SPICE toolkit: https://github.com/AndrewAnnex/SpiceyPy
 - pytest (MIT license), for tests: https://pytest.org/
 - Node.js (MIT license), only for running the browser-formula test: https://nodejs.org/
+- For the demo video and slides only: FFmpeg (LGPL/GPL) to encode the video, Pillow (MIT-CMU license) to add the captions, and Google Chrome in headless mode to take screenshots of the app and print the slides.
 - The web app uses no outside libraries.
 
 ## Prior work by the team
