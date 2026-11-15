@@ -8,7 +8,7 @@ Team Ultimate Laplace · Eindhoven (virtual)
 
 *Triad is a student project. It is not made or endorsed by NASA. It uses NASA data, which are credited in [REFERENCES.md](REFERENCES.md).*
 
-**Live app:** the link is added when the repository becomes public.
+**Live app:** https://ultimatelaplace.github.io/lunar-landing-site-navigator/
 
 ## What it does
 

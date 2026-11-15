@@ -84,3 +84,4 @@ All times are Netherlands time (CET). Every idea, decision and finished task is 
 - 10:35: References check: A. K. G. and K. Ü. opened every link in REFERENCES.md one by one; all of them opened.
 - 10:35: English check: A. K. G. read the video captions and the slides and found no mistakes. A second check with SI suggested two small wording changes.
 - 10:37: Two wording changes approved by the team: the hook now says "humanity's first home on the Moon", and slide 2 says it is based on the team's project summary.
+- 13:03: Published with the team's approval: the repository is now public and the app is live on GitHub Pages (https://ultimatelaplace.github.io/lunar-landing-site-navigator/). The live site was tested: all 25 sites load, alternatives and the own-coordinates checks work, no errors.
